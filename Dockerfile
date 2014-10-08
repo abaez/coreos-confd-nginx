@@ -10,5 +10,7 @@ RUN rm -rf /var/lib/apt/lists/*
 
 VOLUME /etc/confd/
 
+ADD add/conf/ /etc/confd/conf/
+ADD add/template/ /etc/confd/template/
 
 CMD ["confd"]
