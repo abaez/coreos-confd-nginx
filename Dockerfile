@@ -23,4 +23,4 @@ ADD add/template/ /etc/confd/templates/
 
 VOLUME /etc/confd/
 
-CMD ["confd"]
+CMD ["/usr/local/bin/confd_watch"]
