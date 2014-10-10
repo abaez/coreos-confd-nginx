@@ -9,7 +9,7 @@ RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 
 # configuring default nginx
-RUN /etc/nginx/sites-enabled/default
+RUN rm /etc/nginx/sites-enabled/default
 ADD add/nginx.conf /etc/nginx/nginx.conf
 
 # adding confd_watch
