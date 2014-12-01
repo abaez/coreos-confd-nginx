@@ -16,11 +16,8 @@ ADD add/nginx.conf /etc/nginx/nginx.conf
 ADD add/confd_watch /usr/local/bin/confd_watch
 RUN chmod +rx /usr/local/bin/confd_watch
 
-# making confd directories
-RUN mkdir -p /etc/confd/{templates, conf.d}
-ADD add/conf/ /etc/confd/conf.d/
-ADD add/template/ /etc/confd/templates/
-
+# making confd directory
+RUN mkdir /etc/confd
 VOLUME /etc/confd/
 
 CMD ["/usr/local/bin/confd_watch"]
