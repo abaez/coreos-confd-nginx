@@ -16,6 +16,9 @@ ADD add/nginx.conf /etc/nginx/nginx.conf
 ADD add/confd_watch /usr/local/bin/confd_watch
 RUN chmod +rx /usr/local/bin/confd_watch
 
+ENV ETCD_PORT "4001"
+ENV HOST_IP "127.0.0.1"
+
 # making confd directory
 RUN mkdir /etc/confd
 VOLUME /etc/confd/
