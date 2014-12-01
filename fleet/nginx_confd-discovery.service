@@ -1,0 +1,28 @@
+[Unit]
+Description=Announce nginx_confd service
+
+# Requirements
+Requires=etcd.service
+Requires=nginx_confd.service
+
+# Dependency order and binding
+After=etcd.service
+After=nginx_confd.service
+BindsTo=nginx_confd.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/bin/sh -c "while true; do \
+    curl -f ${COREOS_PRIVATE_IPV4}; \
+    if [ $? -eq 0 ]; then \
+      etcdctl set /announce/services/nginx_confd/${COREOS_PRIVATE_IPV4} '${COREOS_PRIVATE_IPV4}' --ttl 30; \
+    else \
+      etcdctl rm /announce/services/nginx_confd/${COREOS_PRIVATE_IPV4}; \
+    fi; \
+    sleep 20; \
+  done"
+ExecStop=/usr/bin/etcdctl rm /announce/services/nginx_confd/${COREOS_PRIVATE_IPV4}
+
+[X-Fleet]
+X-ConditionMachineOf=nginx_confd.service
+

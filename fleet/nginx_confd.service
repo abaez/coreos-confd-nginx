@@ -1,0 +1,36 @@
+[Unit]
+Description=Nginx load balancer for web server backends
+
+# Requirements
+Requires=ngin_confd-discovery.service docker.service etcd.service
+
+# Dependency ordering
+After=docker.service etcd.service
+
+[Service]
+# Let the process take awhile to start up (for first run Docker containers)
+TimeoutStartSec=0
+
+# Change killmode from "control-group" to "none" to let Docker remove
+# work correctly.
+KillMode=none
+
+# Get CoreOS environmental variables
+EnvironmentFile=/etc/environment
+
+# Pre-start and Start
+## Directives with "=-" are allowed to fail without consequence
+ExecStartPre=-/usr/bin/docker kill nginx_confd
+ExecStartPre=-/usr/bin/docker rm nginx_confd
+ExecStartPre=/usr/bin/docker pull abaez/nginx_confd
+ExecStart=/usr/bin/docker run --name nginx_confd -v /home/core/docker-confd/add:/etc/confd/ -e HOST_IP="${COREOS_PUBLIC_IPV4}" -p ${COREOS_PUBLIC_IPV4}:80:80 abaez/nginx_confd
+
+
+
+# Stop
+ExecStop=/usr/bin/docker stop nginx_confd
+
+[X-Fleet]
+X-Conflicts=nginx.service
+X-Conflicts=phabricator@*.service
+
